@@ -8,7 +8,7 @@ $texte = "";
         return $dt && $dt->format($format) === $date;
     }
 
-    $maConnexion = new PDO('mysql:host=localhost;dbname=F1;charset=utf8','lucas','mdp');
+    $maConnexion = new PDO('mysql:host=localhost;dbname=F1;charset=utf8','lucas','ziziland');
     
     
     $BDD = new PDO('mysql:host=localhost;dbname=F1;charset=utf8',"lucas",'ziziland');

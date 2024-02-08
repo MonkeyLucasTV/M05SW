@@ -1,24 +1,17 @@
-
 var truc = document.getElementById("truc");
-
-
-var checkbPil = document.getElementById("CheckPilot")
-
-
-
-
-
+var checkbPil = document.getElementById("CheckPilot");
 var button = document.getElementById("buttonvalider");
-
-const parser = new DOMParser();
+ 
 
 button.addEventListener("click", envoyer);
+button.addEventListener("click",appelGraph)
+     
 
-button.addEventListener("click", ElLog)
+function appelGraph(){
+  Graph(vitesse, regime, heure,"vitesse","regime","#FF0000", "#00FF00")
 
-function ElLog(){
-  console.log(regime, vitesse, heure)
 }
+
 
 document.addEventListener("keyup", function(event) {
   if (event.keyCode === 13) {
@@ -27,16 +20,7 @@ document.addEventListener("keyup", function(event) {
 });
 
 
-
-
-
-
-
 function envoyer(){  
-
-  
-
-
   var DateDeb = document.getElementById("datedebut").value
   DateDeb = DateDeb.replace("T", "%20")
 
@@ -44,45 +28,21 @@ function envoyer(){
   DateFin = DateFin.replace('T', "%20")
   var urlReq = `http://172.20.21.201/~lucas/M05SW/rest.php/mesure/${DateDeb}/${DateFin}/regime`
 
-
-
     var xh = new XMLHttpRequest();
     xh.onreadystatechange = function DecryptedMsg() {
         if (xh.readyState === 4 && xh.status === 200) {
-            console.log("GET : "+xh.responseText);
             var texteRecu=JSON.parse(xh.responseText);
             // La clé
             var key = CryptoJS.enc.Hex.parse("0123456789abcdef0123456789abcdef");
             // Le vecteur d'initialisation
             var iv = CryptoJS.enc.Hex.parse("abcdef9876543210abcdef9876543210");
             var messageB64=texteRecu['chiffrement'];
-            console.log("B64 : "+messageB64);
             var message_dechiffreB64 = CryptoJS.enc.Base64.parse(messageB64);
-            console.log("AES : ");console.log(message_dechiffreB64);
             var texte_decrypte = CryptoJS.AES.decrypt(messageB64, key,
             {iv:iv}).toString(CryptoJS.enc.Utf8);
-            console.log("Déchiffrement JS : "+texte_decrypte);
-
- 
-            console.log(texte_decrypte);
-
-
-
-            var tg = JSON.parse(texte_decrypte) ;
-
-
-
-
-      
-            LeTableau = Object.keys(tg[0]);
-
-            console.log();
-      
-      
-      
-      
-            Grandeur = document.getElementById("SelectGrandeur").value
-      
+            var tg = JSON.parse(texte_decrypte) ;      
+            LeTableau = Object.keys(tg[0]);           
+            Grandeur = document.getElementById("SelectGrandeur").value      
       
             if (testTable() === false){
       
@@ -93,43 +53,21 @@ function envoyer(){
               deleteTable();
               MajTableau(LeTableau, tg, Grandeur)
             }
-            console.log("test");
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          }
-          
+          }         
         }
     xh.open("GET", urlReq, true);
     xh.setRequestHeader("Content-type", "application/json");
     xh.send();
-
-
-
-
-
-
-
-      
-
     }
+
+
 
 function deleteTable(){
 
   document.getElementById("Tableau").innerHTML = "<thead> <tr> </tr> </thead>"
 }
+
+
 
 function testTable(){
   
@@ -146,12 +84,15 @@ function testTable(){
 
 
 
-
-
+let chart
 
 function Graph(vitesse, regime ,heure,legende1, legende2 ,color1, color2) {
-  const ctx = document.getElementById('monGraphe');
-  new Chart(ctx, {
+  
+  
+
+
+  const ctx = document.getElementById('monGraphe');   
+  var data = {
       type: 'line',
       options: {scales:{
         vitesse:{type: 'linear',display:true,position:'left'},
@@ -175,64 +116,52 @@ function Graph(vitesse, regime ,heure,legende1, legende2 ,color1, color2) {
           borderColor: color2,
           borderWidth: 1
           }
-      ]},
-  });
+      ]}
+    }
+
+
+  if(chart){
+    chart.destroy()
+    chart = new Chart(ctx, data)
+  }
+  else{
+    chart = new Chart(ctx, data)
+  }
+
 }
 
-  var vitesse=[];var heure=[];var regime=[];
-
-
-  console.log("fz");
+  
 
 
 
+
+var vitesse=[];var heure=[];var regime=[];
 
 function MajTableau(RowARemp, Objects, Grandeur){
 
    var TableauTruc = document.getElementById("Tableau")
     var row = TableauTruc.insertRow(0)
-
-
     for(i=0; i<RowARemp.length;i++){
         LaCell = row.insertCell(i)
         LaCell.innerHTML = RowARemp[i]
     }
 
-
-
     for(j=1; j<Objects.length;j++){
         var NewRow = TableauTruc.insertRow(j)
         for(k=0; k<RowARemp.length;k++){
-
           TheCell = NewRow.insertCell(k)
-          elementARemp = Object.values(Objects[j])
-          
+          elementARemp = Object.values(Objects[j])          
           if (k === 1) vitesse[j] = elementARemp[k]
           if (k === 2) regime[j] = elementARemp[k]
           if (k === 3) heure[j] = elementARemp[k]
 
-
-
-          if ((k === 1) && (Grandeur === "Mph")){
-
-            
-            var truc = elementARemp[k] / 1.609
-            
+          if ((k === 1) && (Grandeur === "Mph")){            
+            var truc = elementARemp[k] / 1.609            
             truc = truc.toFixed(2)
-
             TheCell.innerHTML = truc;
-
             continue
           }
-
-
-
           TheCell.innerHTML = elementARemp[k];
-
         }
     }
-
 }
-
-
-Graph(vitesse, regime, heure,"vitesse","regime","#FF0000", "#00FF00")
