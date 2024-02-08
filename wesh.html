@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="requete.js" defer></script>
+    <script src="chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requete de merde</title>
+</head>
+<body>
+
+
+    
+
+    <script src="./crypto-js.min.js"></script>
+    
+
+
+
+    <p id="truc">Salut connard !</p>
+
+
+    <form name="Formulaire" >
+
+        <p>Date de debut</p><input type="datetime-local" step="1" name="debut" id="datedebut">
+
+        <p>Date de fin</p><input type="datetime-local" step="1" name="fin" id="datefin">
+
+
+        <p>Selectionnez la grandeur</p><select id="SelectGrandeur">
+            <option value="Mph">Mph</option>
+            <option value="Kmh">Kmh</option>
+        </select>
+        <br><br>
+        <input type="button" value="Envoyer" id="buttonvalider">
+
+        
+    </form>
+    
+    <canvas id="monGraphe"></canvas>
+
+    <table id="Tableau">
+        <thead>
+            <tr>
+            </tr>
+        </thead>
+    </table>
+    
+</body>
+</html>
